@@ -110,12 +110,12 @@ def main() :
     dispatcher = bot.dispatcher
 
     dispatcher.bot.delete_webhook()
-    dispatcher.add_handler(CommandHandler("start",start))
+    dispatcher.add_handler(CommandHandler("start",start, run_async=True))
     
-    dispatcher.add_handler(MessageHandler(Filters.text("تولید عکس جدید",), create_new_image_view))
-    dispatcher.add_handler(MessageHandler(Filters.text("برگشتن به منوی اصلی"), main_menu_view))
-    dispatcher.add_handler(MessageHandler(Filters.text("/start"),start))
-    dispatcher.add_handler(MessageHandler(Filters.all and ~Filters.command ,create_new_image_action))
+    dispatcher.add_handler(MessageHandler(Filters.text("تولید عکس جدید",), create_new_image_view, run_async=True))
+    dispatcher.add_handler(MessageHandler(Filters.text("برگشتن به منوی اصلی"), main_menu_view, run_async= True))
+    dispatcher.add_handler(MessageHandler(Filters.text("/start"),start, run_async= True))
+    dispatcher.add_handler(MessageHandler(Filters.all and ~Filters.command ,create_new_image_action, run_async= True))
 
     bot.start_polling(allowed_updates=Update.ALL_TYPES)
     bot.idle()
