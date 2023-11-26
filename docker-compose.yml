@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  twitter:
+    container_name: "twitter"
+    build:
+      context: .
+      dockerfile: Dockerfile.twitter
+    command: "python /home/app/twitter.py"
+
+  instagram:
+    container_name: "instagram"
+    build:
+      context: .
+      dockerfile: Dockerfile.insta
+    command: "python /home/app/bot.py"

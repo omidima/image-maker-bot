@@ -1,0 +1,10 @@
+FROM python:3.11
+
+WORKDIR /home/app
+COPY . .
+
+RUN pip install -r re.txt
+
+
+
+
