@@ -27,6 +27,8 @@ services:
       - "4444:4444"
     networks:
       - my-network
+    environment:
+      - SE_VNC_PASSWORD=1
 
 networks:
   my-network:
