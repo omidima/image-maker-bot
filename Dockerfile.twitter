@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 WORKDIR /home/app
 
-RUN apt update && apt upgrade
+RUN apt update -y && apt upgrade -y
 RUN apt install wget -y
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.deb
 RUN dpkg -i google-chrome-stable_current_x86_64.deb
@@ -10,11 +10,11 @@ RUN wget https://chromedriver.storage.googleapis.com/109/chromedriver_linux64.zi
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 RUN chmod +x /usr/local/bin/chromedriver
 
-RUN apt-get update && apt-get install python3.11 -y
+RUN apt-get update -y && apt-get install python3.11 -y
 RUN python3.11 -m pip install --upgrade pip
 RUN python --version
 
-RUN apt update && apt upgrade
+RUN apt update -y && apt upgrade -y
 RUN apt install libgl1-mesa-glx -y
 RUN apt-get install -y libnss3 libgconf-2-4 libfontconfig1
 
