@@ -2,12 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
-DATABASE_URL = "sqlite:///./sql_app.db"
+# DATABASE_URL = "sqlite:///./sql_app.db"
+SQLALCHEMY_DATABASE_URL = "postgresql://devops:omid51172123@141.98.210.50/review"
 engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 
-DatabaseSession = sessionmaker(autoflush=True, autocommit=False, bind=engine)
+DatabaseSession = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 Base = declarative_base()
 
 
