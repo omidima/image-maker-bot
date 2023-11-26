@@ -6,14 +6,21 @@ from selenium.webdriver.common.keys import Keys
 
 from bot.utils.classes import TwitteDTO, TwitteInformationDTO, TwitterDataDTO, TwitterMetaDTO, TwitterUserDTO
 
-options = webdriver.ChromeOptions()
-options.add_argument(r"--user-data-dir=./tmp")
-options.add_argument(r"--profile-directory=Default")
-options.add_argument(r"--disable-dev-shm-usage")
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.headless = True
-driver = webdriver.Chrome(options=options)
+# options = webdriver.ChromeOptions()
+# options.add_argument(r"--user-data-dir=./tmp")
+# options.add_argument(r"--profile-directory=Default")
+# options.add_argument(r"--disable-dev-shm-usage")
+# options.add_argument('--headless')
+# options.add_argument('--no-sandbox')
+# options.add_argument("--disable-gpu")
+# options.
+# options.headless = True
+
+selenium_host = "http://172.21.0.2"
+driver = webdriver.Remote(
+    command_executor=f"{selenium_host}:4444/wd/hub",
+    desired_capabilities={"browserName": "chrome"},
+)
 
 
 def login():

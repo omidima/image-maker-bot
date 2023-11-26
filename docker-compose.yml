@@ -6,7 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.twitter
-    command: "python /home/app/twitter.py"
+    depends_on:
+      - selenium-chrome
+    environment:
+      - SELENIUM_HOST=selenium-chrome
+    networks:
+      - my-network
+    command: "python /usr/src/app/twitter.py"
 
   instagram:
     container_name: "instagram"
@@ -14,3 +20,13 @@ services:
       context: .
       dockerfile: Dockerfile.insta
     command: "python /home/app/bot.py"
+
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+    networks:
+      - my-network
+
+networks:
+  my-network:

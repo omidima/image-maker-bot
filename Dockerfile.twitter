@@ -1,21 +1,14 @@
-FROM ubuntu:22.04
-WORKDIR /home/app
+# Use an official Python runtime as a parent image
+FROM python:3.11
 
-RUN apt update -y && apt upgrade -y
-RUN apt install wget -y
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-RUN wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-RUN unzip chromedriver_linux64.zip -d /usr/local/bin
-RUN chmod +x /usr/local/bin/chromedriver
-
-RUN apt-get update -y && apt-get install python3.11 -y
-RUN python3.11 -m pip install --upgrade pip
-RUN python --version
-
-RUN apt update -y && apt upgrade -y
-RUN apt install libgl1-mesa-glx -y
-RUN apt-get install -y libnss3 libgconf-2-4 libfontconfig1
-
+# Copy the current directory contents into the container at /usr/src/app
 COPY . .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r re.txt
+
+# Run script.py when the container launches
+CMD ["python", "./twitter.py"]
