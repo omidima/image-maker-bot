@@ -10,9 +10,9 @@ options = webdriver.ChromeOptions()
 options.add_argument(r"--user-data-dir=./tmp")
 options.add_argument(r"--profile-directory=Default")
 options.add_argument(r"--disable-dev-shm-usage")
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument("--disable-gpu")
+# options.add_argument('--headless')
+# options.add_argument('--no-sandbox')
+# options.add_argument("--disable-gpu")
 # options.
 options.headless = True
 selenium_host = "http://141.98.210.50"
@@ -62,7 +62,7 @@ def load_user_page(username:str):
     body.click()
     for i in range(20):
         body.send_keys(Keys.PAGE_DOWN)
-    sleep(5)
+    sleep(1)
 
     return True
 
@@ -98,19 +98,21 @@ def get_page_twittes(condition= None):
     for i in items:
         try: 
             text = i.find_elements(By.XPATH,"//div[@data-testid='tweetText']")[index].text
-            engag = i.find_element(By.CLASS_NAME,"css-1dbjc4n").find_elements(By.CSS_SELECTOR,".css-1dbjc4n.r-13awgt0.r-18u37iz.r-1h0z5md")
-            comments = get_item_text(engag[0])
-            retwitts = get_item_text(engag[1])
-            like = get_item_text(engag[2])
-            imperation = get_item_text(engag[3])
+            engag = i.find_elements(By.XPATH,"//div[@role='group']")[index].get_attribute("aria-label").split(",")
+            comments = "0"
+            retwitts = "0"
+            like = "0"
+            imperation = "0"
 
-            print({
-                "likes":like,
-                "comments":comments,
-                "retwitte": retwitts,
-                "imperation": imperation,
-                "text": text,
-            })
+            for i in engag:
+                if ("views" in i):
+                    imperation = i.split()[0]
+                elif ("repost" in i):
+                    retwitts = i.split()[0]
+                elif ("likes" in i):
+                    like = i.split()[0]
+                elif ("reply" in i):
+                    comments = i.split()[0]
 
             twitte_body = TwitteDTO(**{
                 "likes":like,

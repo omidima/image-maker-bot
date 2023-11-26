@@ -43,8 +43,6 @@ def hashtag_status(update:Update, context:Dispatcher):
         view_count=x.imperation
       ) for x in data.timeline.twitts])
 
-  print(user_activities)
-
   DataFrame([{
     "نام کاربری": user.username,
     "متن": user.caption,
