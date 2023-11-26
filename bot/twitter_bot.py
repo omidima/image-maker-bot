@@ -15,7 +15,7 @@ options.add_argument('--no-sandbox')
 options.add_argument("--disable-gpu")
 # options.
 options.headless = True
-selenium_host = "http://selenium_host"
+selenium_host = "http://172.24.0.2"
 # options = webdriver.ChromeOptions()
 driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
 # driver = webdriver.Remote(
