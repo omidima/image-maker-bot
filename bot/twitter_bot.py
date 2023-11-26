@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import InvalidSessionIdException
 
 from bot.utils.classes import TwitteDTO, TwitteInformationDTO, TwitterDataDTO, TwitterMetaDTO, TwitterUserDTO
 
@@ -51,11 +52,20 @@ def login():
 
 
 def load_twitter():
-    driver.get("https://twitter.com/")
+    try:
+        driver.get("https://twitter.com/")
+    except InvalidSessionIdException:
+        driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
 
 
 def load_user_page(username:str):
-    driver.get("https://twitter.com/"+username)
+    global driver
+
+    try:
+        driver.get("https://twitter.com/"+username)
+    except InvalidSessionIdException:
+        driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
+
     sleep(1)
 
     body = driver.find_element(By.TAG_NAME,'body')
