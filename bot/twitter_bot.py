@@ -79,30 +79,24 @@ def load_user_page(username:str):
     return True
 
 
-def get_profile_information(username:str):
+def get_profile_information(username:str) -> TwitterUserDTO | None:
     # name = driver.find_elements(By.CSS_SELECTOR, ".css-901oao.r-1awozwy.r-1nao33i.r-6koalj.r-37j5jr.r-adyw6z.r-1vr29t4.r-135wba7.r-bcqeeo.r-1udh08x.r-qvutc0")[0].text
-    bio = driver.find_element(By.XPATH, "//div[@data-testid='UserDescription']").text
-    following = driver.find_elements(By.XPATH, "//a[@role='link']")[12].text
-    follower = driver.find_elements(By.XPATH, "//a[@role='link']")[13].text
-    return TwitterUserDTO(**{
-        # "name": name,
-        "bio": bio,
-        "following": following,
-        "follower": follower,
-        "username": username
-    })
+    try:
+        bio = driver.find_element(By.XPATH, "//div[@data-testid='UserDescription']").text
+        following = driver.find_elements(By.XPATH, "//a[@role='link']")[12].text
+        follower = driver.find_elements(By.XPATH, "//a[@role='link']")[13].text
+        return TwitterUserDTO(**{
+            # "name": name,
+            "bio": bio,
+            "following": following,
+            "follower": follower,
+            "username": username
+        })
+    except:
+        return None
 
 
 def get_page_twittes(condition= None):
-    
-    def get_item_text(item:WebElement):
-        data = None
-        try:
-            data = item.find_element(By.CSS_SELECTOR,".css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0").text
-        except:
-            data = 0
-
-        return data
 
     items = driver.find_elements(By.XPATH, "//div[@data-testid='cellInnerDiv']")
     twitts: list[TwitteDTO] = []
@@ -166,6 +160,9 @@ def check_user_status(username:str, hashtag: str):
     load_user_page(username=username)
 
     user = get_profile_information(username=username)
-    twitts = get_page_twittes(condition=lambda x: check_exists_hashtag(x.text,hashtag))
+    if (user is not None):
+        twitts = get_page_twittes(condition=lambda x: check_exists_hashtag(x.text,hashtag))
+    else:
+        twitts = None
 
     return  TwitterDataDTO(user=user, timeline=twitts)

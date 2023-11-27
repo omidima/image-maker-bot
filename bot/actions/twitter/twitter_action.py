@@ -32,7 +32,7 @@ def hashtag_status(update:Update, context:Dispatcher):
 
   for user in users:
     data = check_user_status(username=user.username,hashtag=hashtag)
-    if (len(data.timeline.twitts) > 0):
+    if (data.timeline is not None) and (len(data.timeline.twitts) > 0):
       user_activities.extend([UserStatusDTO(
         username= data.user.username,
         caption=x.text,
