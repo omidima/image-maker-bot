@@ -56,6 +56,7 @@ def load_twitter():
         driver.get("https://twitter.com/")
     except InvalidSessionIdException:
         driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
+        driver.get("https://twitter.com/")
 
 
 def load_user_page(username:str):
@@ -65,6 +66,7 @@ def load_user_page(username:str):
         driver.get("https://twitter.com/"+username)
     except InvalidSessionIdException:
         driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
+        driver.get("https://twitter.com/"+username)
 
     sleep(1)
 
