@@ -147,7 +147,7 @@ def get_page_twittes(condition= None):
             index+=1
             pass
 
-    retwitts_count = i.find_elements(By.XPATH,"//span[@data-testid='socialContext']")
+    retwitts_count = driver.find_elements(By.XPATH,"//span[@data-testid='socialContext']")
     twitts_count = len(twitts) - len(retwitts_count)
     return TwitteInformationDTO(twitts=twitts, meta=TwitterMetaDTO(**{
         "twitts" : twitts_count,
