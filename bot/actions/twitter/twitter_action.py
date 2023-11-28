@@ -30,9 +30,20 @@ def hashtag_status(update:Update, context:Dispatcher):
     .all()
   state = get_db().query(UserState).filter(UserState.id == context.user_data.get(2).id).first()
 
+  twitts = 0
+  retwitts = 0
+  impration = 0
+  comments = 0
+  active_user = 0
   for user in users:
     data = check_user_status(username=user.username,hashtag=hashtag)
     if (data.timeline is not None) and (len(data.timeline.twitts) > 0):
+      twitts += int(data.timeline.meta.twitts)
+      retwitts += int(data.timeline.meta.retwitts)
+      impration += sum([int(x.imperation) for x in data.timeline.twitts])
+      comments += sum([int(x.comments) for x in data.timeline.twitts])
+      active_user+=1
+
       user_activities.extend([UserStatusDTO(
         username= data.user.username,
         caption=x.text,
@@ -54,9 +65,13 @@ def hashtag_status(update:Update, context:Dispatcher):
 
   DataFrame([{
     "نام ناحیه": state.name,
-    "تعداد فعالیت":len(user_activities),
+    "تعداد توییت": twitts,
+    "تعداد ریتوییت": retwitts,
+    "تعداد کل ویو‌ها": impration,
+    "تعداد کل ریپلای‌ها": comments,
     "گردان":context.user_data.get(1),
     "همه اکانتها": len(users),
+    "اکانتهای فعال": active_user,
   }]).to_excel("state.xlsx")
 
   newData: list[UserStatusDTO] = sorted(user_activities,key=lambda d: int(d.like_count))

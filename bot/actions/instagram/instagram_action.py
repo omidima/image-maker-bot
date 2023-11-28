@@ -30,10 +30,28 @@ def hashtag_status(update:Update, context:Dispatcher):
     .all()
   state = get_db().query(UserState).filter(UserState.id == context.user_data.get(2).id).first()
 
+  post = 0
+  story = 0
+  like = 0
+  impration = 0
+  comments = 0
+  active_user = 0
   for user in users:
     data = check_user_status(username=user.username,hashtag=hashtag)
     if (len(data.status) > 0):
+      for item in data.status:
+        if (item.type == "post"):
+          post+=1
+        else:
+          story+=1
+        
+        like+=str(item.like_count)
+        comments+=str(item.comment_count)
+        impration+=str(item.view_count)
+        impration+=str(item.view_count)
+
       user_activities.extend(data.status)
+      active_user+=1
 
   DataFrame([{
     "نام کاربری": temp.username,
@@ -46,9 +64,14 @@ def hashtag_status(update:Update, context:Dispatcher):
 
   DataFrame([{
     "نام ناحیه": state.name,
-    "تعداد فعالیت":len(user_activities),
+    "تعداد پست‌ها":post,
+    "تعداد استوری‌ها":story,
+    "تعداد لایک‌ها":like,
+    "تعداد کامنت‌ها":comments,
+    "تعداد ویو‌ها":impration,
     "گردان":context.user_data.get(1),
     "همه اکانتها": len(users),
+    "اکانتهای فعال": active_user,
   }]).to_excel("state.xlsx")
 
   newData = sorted(user_activities,key=lambda d: d.like_count)
