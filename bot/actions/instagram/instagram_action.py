@@ -45,10 +45,10 @@ def hashtag_status(update:Update, context:Dispatcher):
         else:
           story+=1
         
-        like+=str(item.like_count)
-        comments+=str(item.comment_count)
-        impration+=str(item.view_count)
-        impration+=str(item.view_count)
+        like+=int(item.like_count)
+        comments+=int(item.comment_count)
+        impration+=int(item.view_count)
+        impration+=int(item.view_count)
 
       user_activities.extend(data.status)
       active_user+=1
