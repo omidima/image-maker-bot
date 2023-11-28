@@ -6,6 +6,8 @@ COPY . .
 RUN apt update -y && apt upgrade -y
 RUN apt install libgl1-mesa-glx -y
 RUN apt-get install -y libnss3 libgconf-2-4 libfontconfig1
+RUN apt-get install -y libleptonica-dev tesseract-ocr tesseract-ocr-dev libtesseract-dev python3-pil tesseract-ocr-eng tesseract-ocr-script-latn
+
 RUN pip install -r re.txt
 
 
