@@ -34,7 +34,7 @@ class TwitterUserModel(Base):
 class ImageUserModel(Base):
     __tablename__ = "images_users"
 
-    id = Column(String, primary_key=True, index=True)
-    username = Column(String, ForeignKey("user_state.id"))
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)

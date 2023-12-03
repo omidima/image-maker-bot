@@ -1,3 +1,4 @@
+import random
 import requests
 from time import sleep
 import instagrapi
@@ -35,11 +36,11 @@ def hashtag_search(hashtag:str, text:str):
 def check_user_status(username:str, hashtag:str) -> UserInformation:
   status = []
   user = instagram.user_info_by_username(username)
-  sleep(1)
+  sleep(random.randint(1,10))
   stories = instagram.user_stories(user_id=user.pk)
-  sleep(1)
-  posts = instagram.user_medias_paginated(user_id=user.pk,amount=12)
-  sleep(1)
+  sleep(random.randint(1,10))
+  posts = instagram.user_medias_paginated(user_id=user.pk,amount=20)
+  sleep(random.randint(1,10))
 
   for item in stories:
     en_text, fa_text = extract_text(item.thumbnail_url)
@@ -82,7 +83,7 @@ def check_user_status(username:str, hashtag:str) -> UserInformation:
 
 def user_follow(username:str):
     pk = instagram.user_info_by_username(username).pk
-    sleep(1)
+    sleep(random.randint(1,5))
     instagram.user_follow(pk)
     sleep(1)
 
