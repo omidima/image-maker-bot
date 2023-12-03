@@ -98,6 +98,8 @@ def hashtag_status(update:Update, context:Dispatcher):
 
 
 def add_user(update:Update, context:Dispatcher):
+  db = get_db()
+
   if (context.user_data.get(1) == None):
     select_type(update,context)
     return 0
@@ -113,10 +115,12 @@ def add_user(update:Update, context:Dispatcher):
 
   for temp_username in users:
     username = temp_username.replace("\n","").split("/")[3]
-    user = UserModel(id=str(uuid.uuid4()),username=username, user_state=state, isMen=(ACTION_KEY.men == context.user_data.get(1)))
-    get_db().add(user)
-    get_db().commit()
-    user_follow(username)
+    user = db.query(UserModel).filter(UserModel.username == username).first()
+    if (not user):
+      user = UserModel(id=str(uuid.uuid4()),username=username, user_state=state, isMen=(ACTION_KEY.men == context.user_data.get(1)))
+      db.add(user)
+      db.commit()
+      user_follow(username)
 
   update.message.reply_text("موفق")
   context.user_data[0] = None
