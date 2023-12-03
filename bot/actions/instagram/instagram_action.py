@@ -37,21 +37,24 @@ def hashtag_status(update:Update, context:Dispatcher):
   comments = 0
   active_user = 0
   for user in users:
-    data = check_user_status(username=user.username,hashtag=hashtag)
-    if (len(data.status) > 0):
-      for item in data.status:
-        if (item.type == "post"):
-          post+=1
-        else:
-          story+=1
-        
-        like+=int(item.like_count)
-        comments+=int(item.comment_count)
-        impration+=int(item.view_count)
-        impration+=int(item.view_count)
+    try:
+      data = check_user_status(username=user.username,hashtag=hashtag)
+      if (len(data.status) > 0):
+        for item in data.status:
+          if (item.type == "post"):
+            post+=1
+          else:
+            story+=1
+          
+          like+=int(item.like_count)
+          comments+=int(item.comment_count)
+          impration+=int(item.view_count)
+          impration+=int(item.view_count)
 
-      user_activities.extend(data.status)
-      active_user+=1
+        user_activities.extend(data.status)
+        active_user+=1
+    except:
+        pass
 
   DataFrame([{
     "نام کاربری": temp.username,
