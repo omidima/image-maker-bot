@@ -121,9 +121,9 @@ def start(update: Update, context: Dispatcher):
 
 
 def main() : 
-    bot = Updater(token="6847148290:AAGTXQivnO8IDr3eNGUqQsAm0A4qN0mjJUM")
-    # bot = Updater(token='202825491:K5T18acVPoL6UpLsaMN9GF68KHTlGL1mH216EgZV',
-    #                    base_url="https://tapi.bale.ai/")
+    # bot = Updater(token="6847148290:AAGTXQivnO8IDr3eNGUqQsAm0A4qN0mjJUM")
+    bot = Updater(token='1242594121:eCaskF8RmGYF7KywlkZqsTTmMpOfIFAn2MijwIl8',
+                       base_url="https://tapi.bale.ai/")
     dispatcher = bot.dispatcher
 
     dispatcher.bot.delete_webhook()
@@ -137,7 +137,5 @@ def main() :
     bot.start_polling(allowed_updates=Update.ALL_TYPES)
     bot.idle()
 
-
-main()
 
   
