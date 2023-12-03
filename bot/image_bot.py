@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup, InputFile
 from telegram.ext import Dispatcher, Filters, Updater, MessageHandler, CommandHandler
 
+from bot.app_database.database import get_db
+from bot.app_database.models import ImageUserModel
+
 load_dotenv()
 
 MEDIA_DIR = os.getenv("MEDIA_DIR")
@@ -96,6 +99,20 @@ def main_menu_view(update: Update, context: Dispatcher):
 
 
 def start(update: Update, context: Dispatcher):
+    db = get_db()
+
+    user = db.query(ImageUserModel).filter(ImageUserModel.id == update.effective_user.id).first()
+    if (not user):
+        user = ImageUserModel(
+            id=update.effective_user.id, 
+            username=update.effective_user.username, 
+            first_name=update.effective_user.first_name, 
+            last_name=update.effective_user.last_name
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
     update.message.reply_text(
         "به ربات عکس‌ساز خوش آمدید برای تولید تصویر با هوش‌مصنوعی یک گزینه را انتخاب کنید.",
         reply_markup=ReplyKeyboardMarkup([["تولید عکس جدید"]])

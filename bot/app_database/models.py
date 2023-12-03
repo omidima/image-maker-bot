@@ -29,3 +29,12 @@ class TwitterUserModel(Base):
 
     username = Column(String)
     isMen = Column(Boolean,default=True)
+
+
+class ImageUserModel(Base):
+    __tablename__ = "images_users"
+
+    id = Column(String, primary_key=True, index=True)
+    username = Column(String, ForeignKey("user_state.id"))
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
