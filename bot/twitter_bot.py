@@ -16,7 +16,7 @@ options.add_argument(r"--disable-dev-shm-usage")
 # options.add_argument("--disable-gpu")
 # options.
 options.headless = True
-selenium_host = "http://141.98.210.50"
+selenium_host = "http://49.12.71.233"
 # options = webdriver.ChromeOptions()
 driver = webdriver.Remote(command_executor=f"{selenium_host}:4444/wd/hub", options=options)
 # driver = webdriver.Remote(

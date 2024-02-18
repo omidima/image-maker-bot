@@ -1,87 +1,85 @@
-# import json
-# import re
-# import openai
-# import g4f
+import sqlite3
+import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, MessageHandler, Filters
+import requests
 
-# openai.api_key = "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"  # Replace with your actual token
-# openai.api_base = "http://127.0.0.1:1337/v1"
+# SQLite database initialization
+conn = sqlite3.connect('user_database.db',  check_same_thread=False)
+cursor = conn.cursor()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY,
+        username TEXT,
+        payment_complete INTEGER DEFAULT 0
+    )
+''')
+conn.commit()
+
+class BotFlow:
+    @staticmethod
+    def start(update, context):
+        user = update.effective_user
+        
+        cursor.execute("INSERT INTO users (user_id, username, payment_complete) VALUES (?, ?, ?)", 
+                   (user.id, user.username, False))
+        conn.commit()
+        
+        context.bot.send_message(chat_id=update.effective_chat.id, text=f"Welcome, {user.first_name}! How can I assist you today?")
+        keyboard = [[InlineKeyboardButton("Complete Payment", callback_data='complete_payment')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Please complete the payment to access more features.", reply_markup=reply_markup)
+
+    @staticmethod
+    def button_click(update, context):
+        query = update.callback_query
+        if query.data == 'complete_payment':
+            user_id = query.from_user.id
+            cursor.execute("UPDATE users SET is_payment_completed = 1 WHERE user_id = ?", (user_id,))
+            conn.commit()
+            context.bot.answer_callback_query(callback_query_id=query.id, text="Payment completed successfully! You can now access more features.")
+            BotFlow.send_message(update, context)
+
+    @staticmethod
+    def send_message(update, context):
+        user_id = update.effective_user.id
+        cursor.execute("SELECT is_payment_completed FROM users WHERE user_id = ?", (user_id,))
+        result = cursor.fetchone()
+        if result and result[0] == 1:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="Please type your message:")
+        else:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="You need to complete payment first.")
+
+    @staticmethod
+    def receive_message(update, context):
+        user_message = update.message.text
+        response = requests.post('https://example.com/publish', json={'message': user_message})
+        if response.status_code == 200:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="Message sent successfully!")
+        else:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="Failed to send message. Please try again later.")
 
 
-# def export_link(text = "علی احمدی ابراز خوشحالی از کشتار در فلسطین،همراه با انتشار عکس کیان پیر فلک https://instagram.com/ali_ahmadi.e230?igshid=NjIwNzIyMDk2Mg=="):
-#     r_instagram = r"https:\/\/instagram.com\/*.*=="
-#     r_twitter = r"(https://twitter.com/.*)\?"
-
-#     if (re.findall(r_instagram,text)):
-#         return 0, re.findall(r_instagram,text)
-#     elif (re.findall(r_twitter,text)):
-#         return 1, re.findall(r_twitter,text)
-
-
-# def export_instagram_username(text = "علی احمدی ابراز خوشحالی از کشتار در فلسطین،همراه با انتشار عکس کیان پیر فلک https://instagram.com/ali_ahmadi.e230?igshid=NjIwNzIyMDk2Mg=="):
-#     if (text.find("https://instagram.com/stories/") > -1):
-#         r = r"https:\/\/instagram.com\/stories\/(.*)\/"
-#         return re.findall(r, text)
-#     elif(text.find("https://instagram.com/")):
-#         r = r"https:\/\/instagram.com\/(.*)\?"
-#         return re.findall(r, text)
+def main():
+    # Telegram bot initialization
+    updater = Updater(token='816748560:xM5H9nWPSdR8COe5DDFRFdZAaoXKNS98mGwL5cvG',
+                       base_url="https://tapi.bale.ai/")
+    dispatcher = updater.dispatcher
+    dispatcher.bot.delete_webhook()
     
+    # Handlers
+    start_handler = MessageHandler(Filters.text("/start"), BotFlow.start)
+    button_handler = CallbackQueryHandler(BotFlow.button_click)
+    message_handler = MessageHandler(Filters.text & ~Filters.command, BotFlow.receive_message)
 
-# def export_twitter_username(link = "https://twitter.com/omiddana19/234123423?"):
-#     return link.split("/")[3]
-    
+    # Adding handlers to dispatcher
+    dispatcher.add_handler(start_handler)
+    dispatcher.add_handler(button_handler)
+    dispatcher.add_handler(message_handler)
 
-# def export_details(text = "علی احمدی ابراز خوشحالی از کشتار در فلسطین،همراه با انتشار عکس کیان پیر فلک https://instagram.com/ali_ahmadi.e230?igshid=NjIwNzIyMDk2Mg=="):
-    
-#     propmt = """
-# به عنوان یک انسان و متخصص تحلیل محتوا این متن را بررسی کن و به این شکل در قالب json برگردان:
-# '''json
-# {
-#     subject: string,
-#     subject_emotion: string,
-#     location: string | null,
-#     user_name: string | null,
-#     links: [string],
-#     keyword: [string]
-# }'''
-# """ + f""" متن: {text}"""
+    # Start polling
+    updater.start_polling()
+    # updater.idle()
 
-#     return openai.ChatCompletion.create(
-#         model=g4f.models.gpt_35_turbo_16k.name,
-#         messages=[{"role": "user", "content": propmt}],
-#         stream=False,
-#     )['choices'][0]["message"]['content']
-
-
-# # print(export_details(text="سید رضا شاهورانی ساکن مهدیشهر ، خیابان المهدی استوری وقتی ۶۹ پادشاه مقابل شاه ایران زانو زدند(مقایسه با طرفداران رونالدو) https://instagram.com/stories/_reza_sh.v.nii/3195725490814557314?utm_source=ig_story_item_share&igshid=NjZiM2M3MzIxNA=="))
-
-# def main():
-#     data = json.loads(open("db.json","r").read())
-#     index = 0
-
-#     for item in data:
-#         j = []
-#         while len(j) == 0:
-#             result = export_details(text=item['content'])
-#             j = re.findall(r"```json(.*)```",result.replace("\n",""))
-
-#         data[index]['details'] = result
-#         data[index]['json'] = json.loads(j[0])
-
-#         index +=1 
-#         open("db.json","w").write(json.dumps(data, ensure_ascii=False))
-#         print(f"Review: {index}",end="\r", flush=True)
-
-#     print("Review complete.")
-
-
-# if __name__ == "__main__":
-#     main()
-#     # print(json.loads(re.findall(r"```json(.*)```",text.replace("\n",""))[0]))
-
-
-from bot.app_database.database import engine
-from bot.app_database.models import Base
-Base.metadata.create_all(bind=engine)
-
-from bot.image_bot import main
-main()
+if __name__ == '__main__':
+    main()
