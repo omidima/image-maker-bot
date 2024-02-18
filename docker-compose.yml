@@ -24,15 +24,6 @@ services:
       - my-network
     command: "python /usr/src/app/twitter.py"
 
-  imager:
-    container_name: "imager"
-    build:
-      context: .
-      dockerfile: Dockerfile.twitter
-    command: "python /usr/src/app/main.py"
-    volumes:
-      - "./media:/usr/src/app/media"
-
   instagram:
     container_name: "instagram"
     build:
