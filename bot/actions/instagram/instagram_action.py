@@ -117,10 +117,13 @@ def add_user(update:Update, context:Dispatcher):
     username = temp_username.replace("\n","").split("/")[3]
     user = db.query(UserModel).filter(UserModel.username == username).first()
     if (not user):
-      user = UserModel(id=str(uuid.uuid4()),username=username, user_state=state, isMen=(ACTION_KEY.men == context.user_data.get(1)))
-      db.add(user)
-      db.commit()
-      user_follow(username)
+      try:
+        user_follow(username)
+        user = UserModel(id=str(uuid.uuid4()),username=username, user_state=state, isMen=(ACTION_KEY.men == context.user_data.get(1)))
+        db.add(user)
+        db.commit()
+      except:
+        print("Fllow user error: user not found")
 
   update.message.reply_text("موفق")
   context.user_data[0] = None
