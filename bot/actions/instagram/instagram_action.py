@@ -41,7 +41,7 @@ def hashtag_status(update:Update, context:Dispatcher):
   
   index = 1
   for user in users:
-    try:
+    # try:
       data = check_user_status(username=user.username,hashtag=hashtag)
       context.bot.edit_message_text(chat_id= update.effective_chat.id, message_id=me.message_id, text=f"شروع فرایند بررسی کاربران. تعداد: {len(users)} - {index}")
       
@@ -52,19 +52,18 @@ def hashtag_status(update:Update, context:Dispatcher):
           else:
             story+=1
           
-          like+=int(item.like_count)
-          comments+=int(item.comment_count)
-          impration+=int(item.view_count)
-          impration+=int(item.view_count)
+          like+=int(item.like_count if item.like_count is not None else 0)
+          comments+=int(item.comment_count if item.comment_count is not None else 0)
+          impration+=int(item.view_count if item.view_count is not None else 0)
+          impration+=int(item.view_count if item.view_count is not None else 0)
 
         user_activities.extend(data.status)
         active_user+=1
         
       index+=1
-    except:
-        print("user not found error")
+    # except:
+    #     print("user not found error")
 
-  print("all",user_activities)
   DataFrame([{
     "نام کاربری": temp.username,
     "لینک پست":temp.links,
@@ -86,7 +85,7 @@ def hashtag_status(update:Update, context:Dispatcher):
     "اکانتهای فعال": active_user,
   }]).to_excel("state.xlsx")
 
-  newData = sorted(user_activities,key=lambda d: d.like_count, reverse=True)
+  newData = sorted(user_activities,key=lambda d: d.like_count if d.like_count is not None else 0, reverse=True)
   newData = newData if (len(newData)<3) else newData[0:3]
 
   update.message.reply_document(InputFile(open("data.xlsx","rb").read(), filename="data.xlsx"),caption=f"گزارش آمار افراد بر اساس ناحیه {state.name}")
