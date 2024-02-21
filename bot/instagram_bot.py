@@ -11,7 +11,8 @@ cv2.setUseOptimized(True)
 
 
 instagram = instagrapi.Client()
-instagram.login_by_sessionid("8577390667%3AR1HLRfctyOrgBe%3A22%3AAYeGAzqQv7JVp9iaJfxFrsRhr9SZvKhxv2JknSIaSA")
+instagram.login(username="+989231284834", password="omid51172123", relogin=True)
+# instagram.login(username="highlight_sem", password="Shamsa_sem", relogin=True)
 
 def extract_text(link:str):
   open("image.png", "wb").write(requests.get(link).content)
@@ -35,13 +36,13 @@ def hashtag_search(hashtag:str, text:str):
 
 def check_user_status(username:str, hashtag:str) -> UserInformation:
   status = []
-  user = instagram.user_info_by_username(username)
+  user = instagram.user_info_by_username_v1(username)
   sleep(random.randint(1,10))
   stories = instagram.user_stories(user_id=user.pk)
   sleep(random.randint(1,10))
   posts = instagram.user_medias_paginated(user_id=user.pk,amount=20)
   sleep(random.randint(1,10))
-
+  
   for item in stories:
     en_text, fa_text = extract_text(item.thumbnail_url)
     en_include, fa_include = hashtag_search(hashtag, en_text), hashtag_search(hashtag, fa_text)
@@ -82,7 +83,7 @@ def check_user_status(username:str, hashtag:str) -> UserInformation:
 
 
 def user_follow(username:str):
-    pk = instagram.user_info_by_username(username).pk
+    pk = instagram.user_info_by_username_v1(username).pk
     sleep(random.randint(1,5))
     instagram.user_follow(pk)
     sleep(1)
