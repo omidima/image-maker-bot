@@ -71,7 +71,7 @@ def load_user_page(username:str):
     sleep(1)
 
     body = driver.find_element(By.TAG_NAME,'body')
-    body.click()
+    # body.click()
     for i in range(20):
         body.send_keys(Keys.PAGE_DOWN)
     sleep(1)

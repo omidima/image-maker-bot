@@ -35,8 +35,14 @@ def hashtag_status(update:Update, context:Dispatcher):
   impration = 0
   comments = 0
   active_user = 0
+
+  index = 1
+  me = update.message.reply_text(f"شروع فرایند بررسی کاربران. تعداد: {len(users)}")
   for user in users:
     data = check_user_status(username=user.username,hashtag=hashtag)
+    context.bot.edit_message_text(chat_id= update.effective_chat.id, message_id=me.message_id, text=f"شروع فرایند بررسی کاربران. تعداد: {len(users)} - {index}")
+
+    index+=1
     if (data.timeline is not None) and (len(data.timeline.twitts) > 0):
       twitts += int(data.timeline.meta.twitts)
       retwitts += int(data.timeline.meta.retwitts)

@@ -1,14 +1,6 @@
 version: "3"
 
 services:
-  selenium-chrome:
-    image: selenium/standalone-chrome:latest
-    ports:
-      - "4444:4444"
-    networks:
-      - my-network
-    environment:
-      - SE_VNC_PASSWORD=1
 
 
   twitter:
@@ -16,12 +8,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.twitter
-    depends_on:
-      - selenium-chrome
-    environment:
-      - SELENIUM_HOST=selenium-chrome
-    networks:
-      - my-network
     command: "python /usr/src/app/twitter.py"
 
   instagram:
@@ -30,6 +16,3 @@ services:
       context: .
       dockerfile: Dockerfile.insta
     command: "python /home/app/bot.py"
-
-networks:
-  my-network:
