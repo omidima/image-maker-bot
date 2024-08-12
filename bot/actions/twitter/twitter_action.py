@@ -81,6 +81,7 @@ def hashtag_status(update:Update, context:Dispatcher):
   }]).to_excel("state.xlsx")
 
   newData: list[UserStatusDTO] = sorted(user_activities,key=lambda d: int(d.view_count))
+  newData.reverse()
   newData = newData if (len(newData)<3) else newData[0:3]
 
   update.message.reply_document(InputFile(open("data.xlsx","rb").read(), filename="data.xlsx"),caption=f"گزارش آمار افراد بر اساس ناحیه {state.name}")

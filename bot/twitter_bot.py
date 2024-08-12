@@ -150,7 +150,7 @@ def get_page_twittes(condition= None):
     }))
 
 def check_exists_hashtag(text:str,hashtag:str):
-    if hashtag in text: 
+    if text.find(hashtag) > -1: 
         return True
     
     return False
