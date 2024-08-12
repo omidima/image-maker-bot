@@ -8,7 +8,7 @@ RUN apt install libgl1-mesa-glx -y
 RUN apt-get install -y libnss3 libgconf-2-4 libfontconfig1
 RUN apt-get install -y libleptonica-dev tesseract-ocr libtesseract-dev libtesseract-dev python3-pil tesseract-ocr-eng tesseract-ocr-script-latn
 RUN wget https://github.com/tesseract-ocr/tessdata/raw/main/fas.traineddata && mv fas.traineddata /usr/share/tesseract-ocr/5/tessdata/
-RUN pip install -r re.txt
+RUN pip install --no-cache-dir -r re.txt
 
 
 
